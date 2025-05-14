@@ -284,9 +284,11 @@ export default function Home() {
           {showMessage && (
             <div className="mt-8 p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl max-w-2xl mx-auto animate-fade-in border border-pink-200">
               <p className="text-lg text-gray-800 leading-relaxed">
-                On this special day, I want to celebrate you and all the joy you bring to my life.
+                {/* On this special day, I want to celebrate you and all the joy you bring to my life.
                 Your smile brightens my darkest days, and your love makes every moment magical.
-                Here&apos;s to many more beautiful memories together!
+                Here&apos;s to many more beautiful memories together! */}
+
+                rahasia ah
               </p>
             </div>
           )}
