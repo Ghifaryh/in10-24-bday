@@ -45,10 +45,75 @@ const ImageModal = ({ isOpen, onClose, imageSrc, alt }: ImageModalProps) => {
   );
 };
 
+interface ImageData {
+  src: string;
+  alt: string;
+}
+
 export default function Home() {
   const [showMessage, setShowMessage] = useState(false);
   const [heartPositions, setHeartPositions] = useState<HeartPosition[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [images, setImages] = useState<ImageData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [collageImages, setCollageImages] = useState<ImageData[]>([]);
+
+  // Calculate age
+  const birthYear = 2001;
+  const currentYear = new Date().getFullYear();
+  const age = currentYear - birthYear;
+
+  // Fetch images for carousel
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const response = await fetch('/api/photos');
+        const data = await response.json();
+        setImages(data.images);
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchImages();
+  }, []);
+
+  // Fetch images for collage
+  useEffect(() => {
+    const fetchCollageImages = async () => {
+      try {
+        console.log('Fetching collage images...');
+        const response = await fetch('/api/gf-photos');
+        const data = await response.json();
+        console.log('Received collage images:', data);
+        setCollageImages(data.images);
+      } catch (error) {
+        console.error('Error fetching collage images:', error);
+      }
+    };
+
+    fetchCollageImages();
+  }, []);
+
+  // Autoplay functionality
+  useEffect(() => {
+    if (isPaused || images.length === 0) return;
+
+    const timer = setInterval(() => {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentSlide((prev) => (prev + 1) % images.length);
+        setIsTransitioning(false);
+      }, 500);
+    }, 3000);
+
+    return () => clearInterval(timer);
+  }, [isPaused, images.length]);
 
   useEffect(() => {
     // Generate random positions for hearts
@@ -101,12 +166,78 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  const nextSlide = () => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentSlide((prev) => (prev + 1) % images.length);
+      setIsTransitioning(false);
+    }, 500);
+  };
+
+  const prevSlide = () => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
+      setIsTransitioning(false);
+    }, 500);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-2xl text-pink-600 animate-pulse">Loading memories...</div>
+      </div>
+    );
+  }
+
+  if (images.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-2xl text-pink-600">No photos found in the photos directory</div>
+      </div>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-100">
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center text-center px-4 overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute inset-0 bg-gradient-to-b from-pink-100 to-purple-100">
+        {/* Photo Collage Background */}
+        <div className="absolute inset-0 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 grid-rows-3 gap-1 sm:gap-2 p-1 sm:p-2">
+          {collageImages.length > 0 ? (
+            [...Array(12)].map((_, i) => {
+              const imageIndex = i % collageImages.length;
+              const image = collageImages[imageIndex];
+              return (
+                <div key={i} className="relative overflow-hidden rounded-lg aspect-square bg-gray-100">
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
+                    className="object-cover hover:scale-110 transition-transform duration-500 opacity-100"
+                    priority={i < 4}
+                    onError={(e) => {
+                      console.error('Error loading image:', image.src);
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              );
+            })
+          ) : (
+            <div className="col-span-2 sm:col-span-3 md:col-span-4 row-span-3 flex items-center justify-center text-gray-400">
+              <div className="text-center">
+                <p className="text-lg mb-2">No photos found</p>
+                <p className="text-sm">Add photos to the public/gf-photos directory</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-pink-100/80 to-purple-100/80 backdrop-blur-[2px]">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-pink-200/20 via-transparent to-transparent animate-pulse"></div>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-200/20 via-transparent to-transparent animate-pulse" style={{ animationDelay: '1s' }}></div>
         </div>
@@ -133,9 +264,9 @@ export default function Home() {
         <div className="relative space-y-6 z-10">
           <div className="relative">
             <h1 className="text-5xl md:text-7xl font-bold text-pink-600 animate-bounce">
-              Happy Birthday!
+              Happy {age}th Birthday!
             </h1>
-            <div className="absolute -top-4 -right-4 text-4xl animate-spin-slow">🎂</div>
+            <div className="absolute -top-4 -right-5 text-4xl animate-spin-slow">🎂</div>
             <div className="absolute -bottom-4 -left-4 text-4xl animate-spin-slow">🎁</div>
           </div>
 
@@ -162,10 +293,79 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Photo Gallery Section */}
+      {/* Carousel Section */}
       <section className="py-16 px-4">
         <h2 className="text-4xl font-bold text-center text-purple-600 mb-12">
           Our Beautiful Memories
+        </h2>
+        <div className="max-w-4xl mx-auto">
+          <div
+            className="relative h-[400px] rounded-xl overflow-hidden shadow-xl"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            {/* Main Image */}
+            <div
+              className="relative w-full h-full cursor-pointer"
+              onClick={() => setSelectedImage(images[currentSlide].src)}
+            >
+              <div className={`absolute inset-0 transition-all duration-1000 ease-in-out ${isTransitioning ? 'opacity-0 scale-110' : 'opacity-100 scale-100'
+                }`}>
+                <Image
+                  src={images[currentSlide].src}
+                  alt={images[currentSlide].alt}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            </div>
+
+            {/* Navigation Buttons - Only show on hover */}
+            <div className={`absolute inset-0 flex items-center justify-between px-4 transition-opacity duration-300 ${isPaused ? 'opacity-100' : 'opacity-0'}`}>
+              <button
+                onClick={prevSlide}
+                className="bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all hover:scale-110"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+              </button>
+              <button
+                onClick={nextSlide}
+                className="bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all hover:scale-110"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Dots Indicator */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+              {images.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setIsTransitioning(true);
+                    setTimeout(() => {
+                      setCurrentSlide(index);
+                      setIsTransitioning(false);
+                    }, 500);
+                  }}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${currentSlide === index ? 'bg-white scale-125' : 'bg-white/50'
+                    }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Original Grid Section */}
+      {/* <section className="py-16 px-4">
+        <h2 className="text-4xl font-bold text-center text-purple-600 mb-12">
+          Our Beautiful Memories (Grid View)
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <div
@@ -174,17 +374,6 @@ export default function Home() {
           >
             <Image
               src="/photos/photo1.jpg"
-              alt="A beautiful memory"
-              fill
-              className="object-cover"
-            />
-          </div>
-          <div
-            className="relative h-64 rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform cursor-pointer"
-            onClick={() => setSelectedImage('/photos/photo2.jpeg')}
-          >
-            <Image
-              src="/photos/photo2.jpeg"
               alt="A beautiful memory"
               fill
               className="object-cover"
@@ -202,7 +391,7 @@ export default function Home() {
             />
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Image Modal */}
       <ImageModal
@@ -240,6 +429,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+
     </main>
   );
 }
