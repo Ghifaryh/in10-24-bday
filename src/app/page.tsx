@@ -60,6 +60,8 @@ export default function Home() {
   const [images, setImages] = useState<ImageData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [collageImages, setCollageImages] = useState<ImageData[]>([]);
+  const [currentCollageIndices, setCurrentCollageIndices] = useState<number[]>([]);
+  const [isCollageTransitioning, setIsCollageTransitioning] = useState(false);
 
   // Calculate age
   const birthYear = 2001;
@@ -87,10 +89,10 @@ export default function Home() {
   useEffect(() => {
     const fetchCollageImages = async () => {
       try {
-        console.log('Fetching collage images...');
+        // console.log('Fetching collage images...');
         const response = await fetch('/api/gf-photos');
         const data = await response.json();
-        console.log('Received collage images:', data);
+        // console.log('Received collage images:', data);
         setCollageImages(data.images);
       } catch (error) {
         console.error('Error fetching collage images:', error);
@@ -99,6 +101,39 @@ export default function Home() {
 
     fetchCollageImages();
   }, []);
+
+  // Add new useEffect for collage randomization
+  useEffect(() => {
+    if (collageImages.length === 0) return;
+
+    const randomizeCollage = () => {
+      setIsCollageTransitioning(true);
+      setTimeout(() => {
+        // Create a shuffled array of all possible indices
+        const shuffledIndices = [...Array(collageImages.length).keys()]
+          .sort(() => Math.random() - 0.5);
+
+        // Take the first 12 indices (or less if we have fewer images)
+        const newIndices = shuffledIndices.slice(0, 12);
+
+        // If we have fewer than 12 images, fill the rest with random indices
+        while (newIndices.length < 12) {
+          newIndices.push(Math.floor(Math.random() * collageImages.length));
+        }
+
+        setCurrentCollageIndices(newIndices);
+        setIsCollageTransitioning(false);
+      }, 500);
+    };
+
+    // Initial randomization
+    randomizeCollage();
+
+    // Set up interval for randomization
+    const interval = setInterval(randomizeCollage, 3000);
+
+    return () => clearInterval(interval);
+  }, [collageImages]);
 
   // Autoplay functionality
   useEffect(() => {
@@ -203,19 +238,34 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center text-center px-4 overflow-hidden">
         {/* Photo Collage Background */}
-        <div className="absolute inset-0 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 grid-rows-3 gap-1 sm:gap-2 p-1 sm:p-2">
+        <div className="absolute inset-0 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 grid-rows-4 sm:grid-rows-3 gap-1 sm:gap-2 p-1 sm:p-2">
           {collageImages.length > 0 ? (
             [...Array(12)].map((_, i) => {
-              const imageIndex = i % collageImages.length;
+              const imageIndex = currentCollageIndices[i] ?? i % collageImages.length;
               const image = collageImages[imageIndex];
               return (
-                <div key={i} className="relative overflow-hidden rounded-lg aspect-square bg-gray-100">
+                <div
+                  key={i}
+                  className={`relative overflow-hidden rounded-lg aspect-square bg-gray-100 transition-all duration-500 
+                    ${isCollageTransitioning ? 'opacity-0' : 'opacity-100'} 
+                    ${i >= 8 ? 'hidden sm:block' : ''}
+                    hover:z-10 hover:scale-110 hover:shadow-2xl cursor-pointer
+                    hover:rotate-3`}
+                  style={{
+                    transformStyle: 'preserve-3d',
+                    perspective: '1000px',
+                    transform: `translate(${Math.sin(Date.now() / 1000 + i) * 5}px, ${Math.cos(Date.now() / 1000 + i) * 5}px)`
+                  }}
+                  onClick={() => setSelectedImage(image.src)}
+                >
+                  <div className="absolute inset-0 p-[2px] bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 animate-gradient-x rounded-lg" />
                   <Image
                     src={image.src}
                     alt={image.alt}
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
-                    className="object-cover hover:scale-110 transition-transform duration-500 opacity-100"
+                    className={`object-cover transition-transform duration-500
+                      ${i % 3 === 0 ? 'sepia' : i % 3 === 1 ? 'grayscale' : 'brightness-110'}`}
                     priority={i < 4}
                     onError={(e) => {
                       console.error('Error loading image:', image.src);
@@ -223,11 +273,19 @@ export default function Home() {
                       target.style.display = 'none';
                     }}
                   />
+                  <div className="absolute inset-0 bg-black/0 hover:bg-black/40 transition-all duration-300 flex flex-col items-center justify-end p-2">
+                    <p className="text-white text-sm opacity-0 hover:opacity-100 transition-opacity duration-300 text-center">
+                      Memory {i + 1}
+                    </p>
+                    <p className="text-white text-xs opacity-0 hover:opacity-100 transition-opacity duration-300 text-center mt-1">
+                      Our special moment together
+                    </p>
+                  </div>
                 </div>
               );
             })
           ) : (
-            <div className="col-span-2 sm:col-span-3 md:col-span-4 row-span-3 flex items-center justify-center text-gray-400">
+            <div className="col-span-2 sm:col-span-3 md:col-span-4 row-span-4 sm:row-span-3 flex items-center justify-center text-gray-400">
               <div className="text-center">
                 <p className="text-lg mb-2">No photos found</p>
                 <p className="text-sm">Add photos to the public/gf-photos directory</p>
@@ -410,9 +468,11 @@ export default function Home() {
             Make a Wish!
           </h2>
           <p className="text-xl text-gray-700 mb-8">
-            Click the stars to make them twinkle
+            Click the stars to make them twinkle and see your wish come true
           </p>
-          <div className="flex justify-center space-x-4">
+
+          {/* Interactive Stars */}
+          <div className="flex justify-center space-x-4 mb-12">
             {[...Array(5)].map((_, i) => (
               <button
                 key={i}
@@ -423,11 +483,41 @@ export default function Home() {
                     origin: { y: 0.6 }
                   });
                 }}
-                className="text-4xl hover:scale-125 transition-transform"
+                className="text-4xl hover:scale-125 transition-transform relative group"
               >
                 ⭐
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white px-3 py-1 rounded-full text-sm text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                  Click for magic!
+                </span>
               </button>
             ))}
+          </div>
+
+          {/* Interactive Message */}
+          <div className="relative">
+            <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-xl p-8 shadow-lg transform hover:scale-105 transition-transform duration-300">
+              <p className="text-lg text-gray-700 mb-4">
+                Your wishes are like stars in the night sky - each one unique and beautiful!
+              </p>
+              <button
+                onClick={() => {
+                  confetti({
+                    particleCount: 200,
+                    spread: 360,
+                    origin: { y: 0.6 },
+                    colors: ['#FF69B4', '#9370DB', '#FFB6C1', '#DDA0DD']
+                  });
+                }}
+                className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full hover:from-pink-600 hover:to-purple-600 transition-all transform hover:scale-105 shadow-lg"
+              >
+                Make All Stars Twinkle ✨
+              </button>
+            </div>
+
+            {/* Floating Elements */}
+            <div className="absolute -top-4 -right-4 text-2xl animate-float">✨</div>
+            <div className="absolute -bottom-4 -left-4 text-2xl animate-float" style={{ animationDelay: '1s' }}>💫</div>
+            <div className="absolute top-1/2 -right-4 text-2xl animate-float" style={{ animationDelay: '2s' }}>🌟</div>
           </div>
         </div>
       </section>

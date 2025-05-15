@@ -10,8 +10,8 @@ const config: Config = {
     extend: {
       keyframes: {
         'fade-in': {
-          '0%': { opacity: '0', transform: 'translateY(10px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
         },
         'float': {
           '0%': { transform: 'translateY(0) rotate(0deg)' },
@@ -22,11 +22,23 @@ const config: Config = {
           '0%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(360deg)' },
         },
+        'gradient-x': {
+          '0%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+          '100%': { backgroundPosition: '0% 50%' },
+        },
       },
       animation: {
-        'fade-in': 'fade-in 0.5s ease-out',
+        'fade-in': 'fade-in 0.5s ease-out forwards',
         'float': 'float 3s ease-in-out infinite',
         'spin-slow': 'spin-slow 8s linear infinite',
+        'gradient-x': 'gradient-x 3s ease infinite',
+      },
+      backgroundSize: {
+        'auto': 'auto',
+        'cover': 'cover',
+        'contain': 'contain',
+        '200%': '200%',
       },
     },
   },
