@@ -236,7 +236,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-100 overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center text-center px-4 overflow-hidden">
+      <section className="relative h-screen flex items-center justify-center text-center px-4">
         {/* Photo Collage Background */}
         <div className="absolute inset-0 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 grid-rows-4 sm:grid-rows-3 gap-1 sm:gap-2 p-1 sm:p-2">
           {collageImages.length > 0 ? (
