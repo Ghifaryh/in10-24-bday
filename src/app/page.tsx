@@ -334,13 +334,13 @@ export default function Home() {
 
           <button
             onClick={() => setShowMessage(!showMessage)}
-            className="mt-8 px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full hover:from-pink-600 hover:to-purple-600 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
+            className="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full hover:from-pink-600 hover:to-purple-600 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
           >
             {showMessage ? 'Hide Message' : 'Click for a Special Message'}
           </button>
 
           {showMessage && (
-            <div className=" p-2 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl max-w-2xl mx-auto animate-fade-in border border-pink-200 z-50">
+            <div className="p-3 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl max-w-2xl mx-auto animate-fade-in border border-pink-200 z-50">
               <div className="relative">
                 {/* Decorative elements */}
                 <div className="absolute -top-4 -left-4 text-2xl animate-float">💝</div>
@@ -349,7 +349,7 @@ export default function Home() {
                 <div className="absolute -bottom-4 -right-4 text-2xl animate-float" style={{ animationDelay: '1.5s' }}>💗</div>
 
                 {/* Main message */}
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <p className="text-base sm:text-lg text-gray-800 leading-relaxed">
                     On this special day, I want to celebrate you and all the joy you bring to my life.
                     Your smile brightens my darkest days, and your love makes every moment magical.
@@ -357,9 +357,9 @@ export default function Home() {
                   </p>
 
                   {/* Special wishes */}
-                  <div className="mt-4 space-y-2">
+                  <div className="mt-6 space-y-3">
                     <h3 className="text-lg font-semibold text-pink-600">My Wishes for You:</h3>
-                    <ul className="space-y-2 text-gray-700">
+                    <ul className="space-y-3 text-gray-700">
                       <li className="flex items-start space-x-2">
                         <span className="text-pink-500 mt-1">✨</span>
                         <span className="text-sm">May you find the perfect job that brings you fulfillment and success</span>
@@ -380,7 +380,7 @@ export default function Home() {
                   </div>
 
                   {/* Closing message */}
-                  <p className="mt-4 text-base font-medium text-purple-600">
+                  <p className="mt-6 text-base font-medium text-purple-600">
                     Wait for me, my love. Our beautiful future together is just beginning... 💑
                   </p>
                 </div>
