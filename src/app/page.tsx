@@ -340,7 +340,7 @@ export default function Home() {
           </button>
 
           {showMessage && (
-            <div className="mt-8 p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl max-w-2xl mx-auto animate-fade-in border border-pink-200">
+            <div className=" p-2 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl max-w-2xl mx-auto animate-fade-in border border-pink-200 z-50">
               <div className="relative">
                 {/* Decorative elements */}
                 <div className="absolute -top-4 -left-4 text-2xl animate-float">💝</div>
@@ -349,38 +349,38 @@ export default function Home() {
                 <div className="absolute -bottom-4 -right-4 text-2xl animate-float" style={{ animationDelay: '1.5s' }}>💗</div>
 
                 {/* Main message */}
-                <div className="space-y-4">
-                  <p className="text-lg text-gray-800 leading-relaxed">
+                <div className="space-y-3">
+                  <p className="text-base sm:text-lg text-gray-800 leading-relaxed">
                     On this special day, I want to celebrate you and all the joy you bring to my life.
                     Your smile brightens my darkest days, and your love makes every moment magical.
                     Here&apos;s to many more beautiful memories together!
                   </p>
 
                   {/* Special wishes */}
-                  <div className="mt-6 space-y-3">
-                    <h3 className="text-xl font-semibold text-pink-600">My Wishes for You:</h3>
+                  <div className="mt-4 space-y-2">
+                    <h3 className="text-lg font-semibold text-pink-600">My Wishes for You:</h3>
                     <ul className="space-y-2 text-gray-700">
-                      <li className="flex items-center space-x-2">
-                        <span className="text-pink-500">✨</span>
-                        <span>May you find the perfect job that brings you fulfillment and success</span>
+                      <li className="flex items-start space-x-2">
+                        <span className="text-pink-500 mt-1">✨</span>
+                        <span className="text-sm">May you find the perfect job that brings you fulfillment and success</span>
                       </li>
-                      <li className="flex items-center space-x-2">
-                        <span className="text-pink-500">✨</span>
-                        <span>Wishing you endless happiness and inner peace in everything you do</span>
+                      <li className="flex items-start space-x-2">
+                        <span className="text-pink-500 mt-1">✨</span>
+                        <span className="text-sm">Wishing you endless happiness and inner peace in everything you do</span>
                       </li>
-                      <li className="flex items-center space-x-2">
-                        <span className="text-pink-500">✨</span>
-                        <span>May our love continue to grow stronger each day</span>
+                      <li className="flex items-start space-x-2">
+                        <span className="text-pink-500 mt-1">✨</span>
+                        <span className="text-sm">May our love continue to grow stronger each day</span>
                       </li>
-                      <li className="flex items-center space-x-2">
-                        <span className="text-pink-500">✨</span>
-                        <span>Looking forward to the day when we start our forever together</span>
+                      <li className="flex items-start space-x-2">
+                        <span className="text-pink-500 mt-1">✨</span>
+                        <span className="text-sm">Looking forward to the day when we start our forever together</span>
                       </li>
                     </ul>
                   </div>
 
                   {/* Closing message */}
-                  <p className="mt-6 text-lg font-medium text-purple-600">
+                  <p className="mt-4 text-base font-medium text-purple-600">
                     Wait for me, my love. Our beautiful future together is just beginning... 💑
                   </p>
                 </div>
@@ -391,8 +391,8 @@ export default function Home() {
       </section>
 
       {/* Carousel Section */}
-      <section className="py-16 px-4">
-        <h2 className="text-4xl font-bold text-center text-purple-600 mb-12">
+      <section className="py-8 sm:py-16 px-4">
+        <h2 className="text-3xl sm:text-4xl font-bold text-center text-purple-600 mb-8 sm:mb-12">
           Our Beautiful Memories
         </h2>
         <div className="max-w-4xl mx-auto">
