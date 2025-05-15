@@ -322,7 +322,7 @@ export default function Home() {
         <div className="relative space-y-6 z-10">
           <div className="relative">
             <h1 className="text-5xl md:text-7xl font-bold text-pink-600 animate-bounce">
-              Happy {age}th Birthday!
+              Happy {age}th Birthday, Inten!
             </h1>
             <div className="absolute -top-4 -right-5 text-4xl animate-spin-slow">🎂</div>
             <div className="absolute -bottom-4 -left-4 text-4xl animate-spin-slow">🎁</div>
@@ -341,13 +341,50 @@ export default function Home() {
 
           {showMessage && (
             <div className="mt-8 p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl max-w-2xl mx-auto animate-fade-in border border-pink-200">
-              <p className="text-lg text-gray-800 leading-relaxed">
-                {/* On this special day, I want to celebrate you and all the joy you bring to my life.
-                Your smile brightens my darkest days, and your love makes every moment magical.
-                Here&apos;s to many more beautiful memories together! */}
+              <div className="relative">
+                {/* Decorative elements */}
+                <div className="absolute -top-4 -left-4 text-2xl animate-float">💝</div>
+                <div className="absolute -top-4 -right-4 text-2xl animate-float" style={{ animationDelay: '1s' }}>💖</div>
+                <div className="absolute -bottom-4 -left-4 text-2xl animate-float" style={{ animationDelay: '2s' }}>💕</div>
+                <div className="absolute -bottom-4 -right-4 text-2xl animate-float" style={{ animationDelay: '1.5s' }}>💗</div>
 
-                rahasia ah
-              </p>
+                {/* Main message */}
+                <div className="space-y-4">
+                  <p className="text-lg text-gray-800 leading-relaxed">
+                    On this special day, I want to celebrate you and all the joy you bring to my life.
+                    Your smile brightens my darkest days, and your love makes every moment magical.
+                    Here&apos;s to many more beautiful memories together!
+                  </p>
+
+                  {/* Special wishes */}
+                  <div className="mt-6 space-y-3">
+                    <h3 className="text-xl font-semibold text-pink-600">My Wishes for You:</h3>
+                    <ul className="space-y-2 text-gray-700">
+                      <li className="flex items-center space-x-2">
+                        <span className="text-pink-500">✨</span>
+                        <span>May you find the perfect job that brings you fulfillment and success</span>
+                      </li>
+                      <li className="flex items-center space-x-2">
+                        <span className="text-pink-500">✨</span>
+                        <span>Wishing you endless happiness and inner peace in everything you do</span>
+                      </li>
+                      <li className="flex items-center space-x-2">
+                        <span className="text-pink-500">✨</span>
+                        <span>May our love continue to grow stronger each day</span>
+                      </li>
+                      <li className="flex items-center space-x-2">
+                        <span className="text-pink-500">✨</span>
+                        <span>Looking forward to the day when we start our forever together</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Closing message */}
+                  <p className="mt-6 text-lg font-medium text-purple-600">
+                    Wait for me, my love. Our beautiful future together is just beginning... 💑
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -464,8 +501,8 @@ export default function Home() {
       {/* Interactive Elements */}
       <section className="py-16 px-4 bg-white/50">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-purple-600 mb-8">
-            Make a Wish!
+          <h2 className="text-4xl font-bold text-purple-600 mb-4">
+            Make a Wish, <span className="text-pink-500 animate-pulse">Inten!</span>!
           </h2>
           <p className="text-xl text-gray-700 mb-8">
             Click the stars to make them twinkle and see your wish come true
@@ -496,6 +533,13 @@ export default function Home() {
           {/* Interactive Message */}
           <div className="relative">
             <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-xl p-8 shadow-lg transform hover:scale-105 transition-transform duration-300">
+              <div className="relative mb-6">
+                <h3 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
+                  Happy Birthday, Inten! 🎂
+                </h3>
+                <div className="absolute -top-4 -right-4 text-2xl animate-float">✨</div>
+                <div className="absolute -bottom-4 -left-4 text-2xl animate-float" style={{ animationDelay: '1s' }}>💫</div>
+              </div>
               <p className="text-lg text-gray-700 mb-4">
                 Your wishes are like stars in the night sky - each one unique and beautiful!
               </p>
